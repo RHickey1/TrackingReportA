@@ -1,0 +1,157 @@
+Private Sub AdminBox_Change()
+    Dim AdminLength As String
+    Dim wkb As Excel.Workbook
+    Dim wks As Excel.Worksheet
+    
+    Set wkb = Excel.Workbooks("Tracking Report Macro.xlsm")
+    Set wks = wkb.Worksheets("Values")
+    
+    AdminLength = Me.AdminBox.Value
+    wks.Range("B3").Value = AdminLength
+    
+End Sub
+
+Private Sub CancelButton_Click()
+    Range("B1:B4").Clear
+    Unload UserForm1
+End Sub
+
+Private Sub DayBox_Change()
+    Dim Day As Integer
+    Dim wkb As Excel.Workbook
+    Dim wks As Excel.Worksheet
+    
+    Set wkb = Excel.Workbooks("Tracking Report Macro.xlsm")
+    Set wks = wkb.Worksheets("Values")
+    
+    Day = Me.DayBox.Value
+    wks.Range("B2").Value = Day
+End Sub
+
+Private Sub EnterButton_Click()
+    Dim Month As Integer
+    Dim Day As Integer
+    Dim AdminLength As String
+    Dim NVHstart As String
+    
+    Dim wkb As Excel.Workbook
+    Dim wks As Excel.Worksheet
+    
+    Set wkb = Excel.Workbooks("Tracking Report Macro.xlsm")
+    Set wks = wkb.Worksheets("Values")
+    
+        AdminLength = Me.AdminBox.Value
+        wks.Range("B3").Value = AdminLength
+        
+        Day = Me.DayBox.Value
+        wks.Range("B2").Value = Day
+        
+        Month = Me.MonthBox.Value
+        wks.Range("B1").Value = Month
+        
+        NVHstart = Me.NVHBox.Value
+        wks.Range("B4").Value = NVHstart
+    Unload UserForm1
+End Sub
+
+
+Private Sub MonthBox_Change()
+    Dim Month As Integer
+    Dim wkb As Excel.Workbook
+    Dim wks As Excel.Worksheet
+    
+    Set wkb = Excel.Workbooks("Tracking Report Macro.xlsm")
+    Set wks = wkb.Worksheets("Values")
+    
+    Month = Me.MonthBox.Value
+    wks.Range("B1").Value = Month
+End Sub
+
+Private Sub NVHBox_Change()
+    Dim NVHstart As String
+    Dim wkb As Excel.Workbook
+    Dim wks As Excel.Worksheet
+    
+    Set wkb = Excel.Workbooks("Tracking Report Macro.xlsm")
+    Set wks = wkb.Worksheets("Values")
+    
+    NVHstart = Me.NVHBox.Value
+    wks.Range("B4").Value = NVHstart
+End Sub
+
+Private Sub STDbox_Change()
+    Dim STDlength As String
+    Dim wkb As Excel.Workbook
+    Dim wks As Excel.Worksheet
+    
+    Set wkb = Excel.Workbooks("Tracking Report Macro.xlsm")
+    Set wks = wkb.Worksheets("Values")
+    
+    STDlength = Me.STDbox.Value
+    wks.Range("B5").Value = STDlength
+End Sub
+
+Private Sub UserForm_Click()
+
+End Sub
+
+Private Sub UserForm_Initialize()
+
+    MonthBox.AddItem "01"
+    MonthBox.AddItem "02"
+    MonthBox.AddItem "03"
+    MonthBox.AddItem "04"
+    MonthBox.AddItem "05"
+    MonthBox.AddItem "06"
+    MonthBox.AddItem "07"
+    MonthBox.AddItem "08"
+    MonthBox.AddItem "09"
+    MonthBox.AddItem "10"
+    MonthBox.AddItem "11"
+    MonthBox.AddItem "12"
+
+    DayBox.AddItem "01"
+    DayBox.AddItem "02"
+    DayBox.AddItem "03"
+    DayBox.AddItem "04"
+    DayBox.AddItem "05"
+    DayBox.AddItem "06"
+    DayBox.AddItem "07"
+    DayBox.AddItem "08"
+    DayBox.AddItem "09"
+    DayBox.AddItem "10"
+    DayBox.AddItem "11"
+    DayBox.AddItem "12"
+    DayBox.AddItem "13"
+    DayBox.AddItem "14"
+    DayBox.AddItem "15"
+    DayBox.AddItem "16"
+    DayBox.AddItem "17"
+    DayBox.AddItem "18"
+    DayBox.AddItem "19"
+    DayBox.AddItem "20"
+    DayBox.AddItem "21"
+    DayBox.AddItem "22"
+    DayBox.AddItem "23"
+    DayBox.AddItem "24"
+    DayBox.AddItem "25"
+    DayBox.AddItem "26"
+    DayBox.AddItem "27"
+    DayBox.AddItem "28"
+    DayBox.AddItem "29"
+    DayBox.AddItem "30"
+    DayBox.AddItem "31"
+
+    AdminBox.AddItem "30 Day"
+    AdminBox.AddItem "60 Day"
+    AdminBox.AddItem "90 Day"
+    
+    NVHBox.AddItem "1st of the following month"
+    NVHBox.AddItem "Date of Hire"
+    
+    STDbox.AddItem "30 Day"
+    STDbox.AddItem "60 Day"
+    STDbox.AddItem "80 Day"
+    STDbox.AddItem "90 Day"
+
+End Sub
