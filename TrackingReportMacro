@@ -1,0 +1,341 @@
+Sub TrackingReport()
+
+Application.ScreenUpdating = False ' makes it so you don't see the stuff updating
+
+
+arr1 = Array("Employee Location", "Employee Department", "Employment State", "Employment Type", "Employement State", "Residence State")
+
+' this sets up with columns will be deleted by the macro, you can add or remove as needed, just make sure to adjusted the below array references along with it
+
+    Set MR = Range("A1:S1")
+    For Each cell In MR
+        If cell.Value = arr1(0) Then cell.EntireColumn.Delete
+    Next
+    For Each cell In MR
+        If cell.Value = arr1(1) Then cell.EntireColumn.Delete
+    Next
+    For Each cell In MR
+        If cell.Value = arr1(2) Then cell.EntireColumn.Delete
+    Next
+    For Each cell In MR
+        If cell.Value = arr1(3) Then cell.EntireColumn.Delete
+    Next
+    For Each cell In MR
+        If cell.Value = arr1(4) Then cell.EntireColumn.Delete
+    Next
+    For Each cell In MR
+        If cell.Value = arr1(5) Then cell.EntireColumn.Delete
+    Next
+    
+
+    UserForm1.Show 'makes the userform show up on your active sheet
+    
+    'setup of variables from the userform
+    
+    Dim StandardMonth As Integer
+    Dim StandardDay As Integer
+    Dim AdminLength As String
+    Dim NVHstart As String
+    Dim wkb As Excel.Workbook
+    Dim wks As Excel.Worksheet
+    
+    Set wkb = Excel.Workbooks("Tracking Report Macro.xlsm")
+    Set wks = wkb.Worksheets("Values")
+    
+    
+    StandardMonth = wks.Range("B1").Value ' This is implemented
+    StandardDay = wks.Range("B2").Value ' This is implemented
+    AdminLength = wks.Range("B3").Value ' This is implemented
+    NVHstart = wks.Range("B4").Value ' This is implemented
+    StandardLength = wks.Range("B5").Value ' This value is implemented
+    
+    
+    If AdminLength = "30 Day" Then AdminLength = 1
+    
+    If AdminLength = "60 Day" Then AdminLength = 2
+    
+    If AdminLength = "90 Day" Then AdminLength = 3
+    
+    If StandardLength = "30 Day" Then StandardLength = 30
+    
+    If StandardLength = "60 Day" Then StandardLength = 60
+    
+    If StandardLength = "80 Day" Then StandardLength = 80
+
+    If StandardLength = "90 Day" Then StandardLength = 90
+    'these values are used later to input the correct admin end date.
+    
+
+
+    Rows("1:1").Select
+    With Selection
+        .HorizontalAlignment = xlGeneral
+        .VerticalAlignment = xlBottom
+        .WrapText = True
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ShrinkToFit = False
+        .ReadingOrder = xlContext
+        .MergeCells = False
+    End With
+    'makes the headers wrapped text
+    
+    Columns("A:M").Select
+    Columns("A:M").EntireColumn.AutoFit
+    'autofits all the columns.
+    
+    
+    Columns("E:E").Select
+    Selection.Insert Shift:=xlToRight
+    
+    Columns("J:J").Select
+    Selection.Insert Shift:=xlToRight
+    
+    Columns("L:L").Select
+    Selection.Insert Shift:=xlToRight
+    
+    Columns("P:P").Select
+    Selection.Insert Shift:=xlToRight
+    
+    Columns("R:R").Select
+    Selection.Insert Shift:=xlToRight
+    
+    'inserting all the necessary columns needed to do the calculations
+    
+    
+    Range("E1").Value = "=D1"
+    Range("J1").Value = "=I1"
+    Range("L1").Value = "=K1"
+    Range("P1").Value = "=O1"
+    Range("R1").Value = "=Q1"
+    
+
+Dim LastRow As Long, c As Long
+Dim MyRange As Range
+LastRow = Cells(Cells.Rows.Count, "D").End(xlUp).Row
+'this will count how many rows the report has so it only runs on rows that exist.
+
+c = 2
+Do While c < LastRow + 1
+
+Range("E" & c).Value = "=DATE(YEAR(D" & c & "),MONTH(D" & c & "),DAY(D" & c & "))"
+Range("J" & c).Value = "=DATE(YEAR(I" & c & "),MONTH(I" & c & "),DAY(I" & c & "))"
+Range("L" & c).Value = "=DATE(YEAR(K" & c & "),MONTH(K" & c & "),DAY(K" & c & "))"
+Range("P" & c).Value = "=DATE(YEAR(O" & c & "),MONTH(O" & c & "),DAY(O" & c & "))"
+Range("R" & c).Value = "=DATE(YEAR(Q" & c & "),MONTH(Q" & c & "),DAY(Q" & c & "))"
+'changes text to datevalues
+
+If Range("C" & c).Value = "Calculated Full-Time" Then
+    Range("T" & c).Value = 1
+    Range("A" & c & ":R" & c).Select
+    With Selection.Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .Color = 65535
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+    End With
+    ElseIf Range("F" & c).Value > 20 Then
+    Range("T" & c).Value = 2
+    Range("A" & c & ":R" & c).Select
+    With Selection.Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .ThemeColor = xlThemeColorAccent5
+        .TintAndShade = 0.399975585192419
+        .PatternTintAndShade = 0
+    End With
+    Else
+    Range("T" & c).Value = 3
+End If
+'This will determine if the row should be given a value of 1(calculated FT),2(over 20 avg hours),or 3(everyone else) to be sorted in the three different main groups.
+'They will also be highlighted according to group too.
+
+If Range("G" & c).Value = "Employee can no longer maintain Non-Full-Time status" Then
+    Range("A" & c & ":R" & c).Select
+    With Selection.Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .Color = 65535
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+    End With
+    With Selection.Font
+        .Color = -16776961
+        .TintAndShade = 0
+    End With
+End If
+'determines if they should have red text. (They will be highlighted yellow as well)
+
+
+If Range("G" & c).Value = "Employee is in Admin Period" Then
+    If Range("C" & c).Value = "Calculated Full-Time" Then
+    Range("A" & c & ":R" & c).Select
+    With Selection.Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .Color = 255
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+    End With
+    With Selection.Font
+        .ColorIndex = xlAutomatic
+        .TintAndShade = 0
+    End With
+    
+    End If
+End If
+'If they are calulated FT at the end of their measurement period they will be highlighted red. This tests for those two conditions simultaneously
+
+    If Range("H" & c).Value = "New Variable Hour" Then
+        
+        If NVHstart = "1st of the following month" Then
+            Range("J" & c).Value = "=DATE(YEAR(D" & c & "),MONTH(D" & c & ")+1,1)"
+            Range("L" & c).Value = "=DATE(YEAR(D" & c & ")+1,MONTH(D" & c & ")+1,1)-1"
+            Range("P" & c).Value = Range("L" & c).Value + 1 '"=DATE(YEAR(D" & c & "),MONTH(D" & c & ")+1,1)"
+            Range("R" & c).Value = "=DATE(YEAR(D" & c & ")+1,MONTH(D" & c & ")+" & AdminLength & "+1,1)-1"
+            'Runs for 1st of the following month measurement periods, NVH employees
+        Else
+            Range("J" & c).Value = Range("D" & c).Value
+            Range("L" & c).Value = "=DATE(YEAR(D" & c & ")+1,MONTH(D" & c & "),DAY(D" & c & "))-1"
+            Range("P" & c).Value = Range("L" & c).Value + 1
+            Range("R" & c).Value = "=DATE(YEAR(D" & c & ")+1,MONTH(D" & c & ")+" & AdminLength & ",DAY(D" & c & "))-1"
+            'Runs for Date of Hire measurement periods, NVH employees
+        End If
+            
+    Else
+    
+        ' Range("J" & c).Value = "=DATE (YEAR(TODAY())" ' "=DATE(YEAR(TODAY())-1," & StandardMonth & "," & StandardDay & ")"
+        ' Range("L" & c).Value = Range("L" & c).Value + 365 ' "=DATE(YEAR(TODAY())," & StandardMonth & "," & StandardDay & ")-1"
+        Range("P" & c).Value = Range("L" & c).Value + 1   ' "=DATE(YEAR(TODAY())," & StandardMonth & "+" & StandardLength & "," & StandardDay & ")+1"
+        Range("R" & c).Value = Range("P" & c).Value + StandardLength ' "=DATE(YEAR(TODAY())+1," & StandardMonth & "+" & StandardLength & "," & StandardDay & ")-1"
+        'This is for all standard measurement employees, they all have the same start determined by the userform input
+        'and the length is also determined by the userform input.
+    End If
+
+c = c + 1
+Loop
+'This will loop through all rows as determined by the row count earlier.
+
+Columns("E:E").Select
+Selection.Copy
+Columns("D:D").Select
+Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+Selection.NumberFormat = "m/d/yyyy"
+Columns("E:E").Select
+Application.CutCopyMode = False
+Selection.Delete Shift:=xlToLeft
+       
+Columns("I:I").Select
+Selection.Copy
+Columns("H:H").Select
+Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+Selection.NumberFormat = "m/d/yyyy"
+Columns("I:I").Select
+Application.CutCopyMode = False
+Selection.Delete Shift:=xlToLeft
+
+Columns("J:J").Select
+Selection.Copy
+Columns("I:I").Select
+Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+Selection.NumberFormat = "m/d/yyyy"
+Columns("J:J").Select
+Application.CutCopyMode = False
+Selection.Delete Shift:=xlToLeft
+        
+Columns("M:M").Select
+Selection.Copy
+Columns("L:L").Select
+Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+Selection.NumberFormat = "m/d/yyyy"
+Columns("M:M").Select
+Application.CutCopyMode = False
+Selection.Delete Shift:=xlToLeft
+
+Columns("N:N").Select
+Selection.Copy
+Columns("M:M").Select
+Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+Selection.NumberFormat = "m/d/yyyy"
+Columns("N:N").Select
+Application.CutCopyMode = False
+Selection.Delete Shift:=xlToLeft
+
+Columns("A:M").Select
+Selection.Copy
+Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+        
+'Removing the formulas where needed, deleting excess columns when no longer needed and changing the number format where needed.
+        
+
+Cells.Select
+    Application.CutCopyMode = False
+    ActiveWorkbook.Worksheets("Employees Data").Sort.SortFields.Clear
+    ActiveWorkbook.Worksheets("Employees Data").Sort.SortFields.Add2 Key:=Range( _
+        "O2:O" & LastRow), SortOn:=xlSortOnValues, Order:=xlAscending, DataOption:= _
+        xlSortNormal
+    ActiveWorkbook.Worksheets("Employees Data").Sort.SortFields.Add2 Key:=Range( _
+        "H2:H" & LastRow), SortOn:=xlSortOnValues, Order:=xlAscending, DataOption:= _
+        xlSortTextAsNumbers
+    ActiveWorkbook.Worksheets("Employees Data").Sort.SortFields.Add2 Key:=Range( _
+        "E2:E" & LastRow), SortOn:=xlSortOnValues, Order:=xlDescending, DataOption:= _
+        xlSortNormal
+    With ActiveWorkbook.Worksheets("Employees Data").Sort
+        .SetRange Range("A1:R" & LastRow)
+        .Header = xlYes
+        .MatchCase = False
+        .Orientation = xlTopToBottom
+        .SortMethod = xlPinYin
+        .Apply
+    End With
+    ActiveWindow.SmallScroll Down:=-42
+    
+'This sorts the sheet by the three main groups, then by measurement period start date, then by avg weekly hours.
+    
+
+Columns("O:O").Select
+Application.CutCopyMode = False
+Selection.Delete Shift:=xlToLeft
+
+'Removes the excess column that was needed for sorting.
+
+
+With Range("A2:A" & LastRow)
+.NumberFormat = "General"
+.Value = .Value
+End With
+    
+With Range("E1:E" & LastRow)
+.NumberFormat = "00.00"
+.Value = .Value
+End With
+        
+With Range("F1:F" & LastRow)
+.NumberFormat = "00.00"
+.Value = .Value
+End With
+    
+With Range("K1:K" & LastRow)
+.NumberFormat = "00.00"
+.Value = .Value
+End With
+'These change the text columns to numbers.
+
+Range("A1").Select
+'selects the top left cell to make it look nicer.
+
+'I HAVE REMOVED SECTION THAT ADDS ANOTHER TAB WITH LEGALISE THAT IS INCLUDED WITH EVERY REPORT
+
+Application.ScreenUpdating = True
+'turns screen updates back on
+
+End Sub
+'all done!
